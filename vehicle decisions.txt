@@ -1,0 +1,10 @@
+Create Vehicles program report:
+
+In this report I will write the decision I take to create the program.
+
+Firstly, I didn't know if the calculate of the gas consuption was a Method in class vehicle
+Finally I decide to create it it the controller.
+
+I had to search personal characteristic of each vehicle type to add it into the no-inhereted attributes.
+
+I had to create the method Menu-Engine, Because it will repeat constantly, so, I have to created it 
