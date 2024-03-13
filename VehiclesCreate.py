@@ -1,0 +1,344 @@
+ # =====================---- MODEL ----====================
+
+#====--- CLASS ENGINE ---====
+from typing import List
+
+
+class Engine:
+
+  #Constructor Method
+  def __init__(self,type:str, potency:float, weight:float):
+
+#class atributes - All them are private. __indicates -> private
+
+    self.__type = type # type of engine
+    self.__potency = potency # in KiloWats
+    self.__weight = weight  # In Kg
+
+ #---- GETTERS AND SETTERS ----
+  def get_type(self):
+    return self.__type
+
+  def get_potency(self):
+    return self.__potency
+
+  def get_weight(self):
+    return self.__weight
+
+  def set_type(self, new_type):
+    self.__type = new_type
+
+  def set_potency(self, new_potency):
+    self.__potency = new_potency
+
+  def set_weight(self, new_weight):
+    self.__weight = new_weight
+
+#====---  CLASS VEHICLE (FATHER CLASS)---====
+
+
+class Vehicle():
+
+  #Constructor Method
+  def __init__(self, engine: Engine, chasis: str, model: str, year: int):
+
+    #Class atributes - All them are protectected. _indicates -> protected
+    self._engine = engine
+    self._chasis = chasis # A or B
+    self._model = model
+    self._year = year
+    self._gas_consuption = None #It will be defined in the Manager Class. Cuz the logic can't be in the Model.
+
+#---- GETTERS AND SETTERS ----
+
+  def get_engine(self):
+    return self._engine
+
+  def get_chasis(self):
+    return self._chasis
+
+  def get_model(self):
+    return self._model
+
+  def get_year(self):
+    return self._year
+
+  def set_engine(self, new_engine):
+    self._engine = new_engine
+
+  def set_chasis(self, new_chasis):
+    self._chasis = new_chasis
+
+  def set_model(self, new_model):
+    self._model = new_model
+
+  def set_year(self, new_year):
+    self._year = new_year
+
+  def get_gas_consuption(self):
+        return self._gas_consuption
+
+  def set_gas_consuption(self, new_gas_consuption):
+        self._gas_consuption = new_gas_consuption
+#====---  CLASS CAR ---====
+
+class Car(Vehicle):
+
+  #Constructor Method
+  def __init__(self, engine, chasis, model, year, transmision_type:str):
+
+  #Defining the class atributes with the super class
+
+    super().__init__(engine, chasis, model, year)
+
+    #Class atributes. __indicates -> private
+    self.__transmision_type = transmision_type #Manual or automatic
+
+  #---- GETTERS AND SETTERS ----
+  def get_transmision_type(self):
+    return self.__transmision_type
+
+  def set_transmision_type(self, new_transmision_type):
+    self.__transmision_type = new_transmision_type
+
+
+
+#====---  CLASS TRUCK ---====
+class Truck(Vehicle):
+
+  #Constructor Method
+  def __init__(self, engine, chasis, model, year, capacity: float):
+
+  #Defining the class atributes with the super class
+
+    super().__init__(engine, chasis, model, year)
+
+    #Class atributes. __indicates -> private
+    self.__capacity = capacity #In m3
+
+
+#====--- CLASS YACHT---====
+class Yacht(Vehicle):
+
+  #Constructor Method
+  def __init__(self, engine, chasis, model, year, people_capacity:int):
+
+  #Defining the class atributes with the super class
+
+    super().__init__(engine, chasis, model, year)
+
+    #Class atributes. __indicates -> private
+    self.__people_capacity = people_capacity #How many peopl can go in the yacht.
+
+#====---  CLASS MOTORCYCLE ---====
+
+class Motorcycle(Vehicle):
+
+  #Constructor Method
+  def __init__(self, engine, chasis, model, year, wheels_diameter):
+
+  #Defining the class atributes with the super class
+
+    super().__init__(engine, chasis, model, year)
+
+    #Class atributes. __indicates -> private
+
+    self.__wheels_diameter = wheels_diameter
+
+
+# =====================---- CONTROL ----===============================
+
+#====---  CLASS MAIN CONTROLLER ---====
+import sys
+import time
+class Main_controller:
+
+  #Constructor Method
+  def __init__(self):
+    self.__view = View(self)
+    self.__vehicles = []
+    self.__view.start_menu()
+
+
+  #---- ADITTIONAL METHODS ----
+
+  #Method that calculates the gas consumption of the vehicles.
+
+  def cal_gas_consuption(self,vehicle:Vehicle):
+
+    if (vehicle.get_chasis == "A"):
+      vehicle.set_gas_consuption (1.1*vehicle._engine.get_potency() + 0.2 * vehicle._engine.get_weight() - (0.3))
+    elif (vehicle._chasis == "B"):
+      vehicle.set_gas_consuption ( 1.1*vehicle._engine.get_potency() + 0.2 * vehicle._engine.get_weight() - (0.5))
+
+#____
+
+  #Methods to create different Vehicles and engine:
+  def create_engine(self,type:str, potency:float, weight:float):
+    engine = Engine(type, potency, weight)
+    return engine
+
+  def create_car(self,engine:Engine,chasis:str,model:str,year:int,transmision_type):
+    car = Car(engine,chasis,model,year,transmision_type)
+    self.cal_gas_consuption(car)
+    self.__vehicles.append(car)
+
+  def create_truck(self,engine:Engine,chasis:str,model:str,year:int,capacity:float):
+    truck = Truck(engine,chasis,model,year,capacity)
+    self.cal_gas_consuption(truck)
+    self.__vehicles.append(truck)
+
+  def create_yacht (self,engine:Engine,chasis:str,model:str,year:int, people_capacity:int):
+    yacht = Yacht(engine,chasis,model,year,people_capacity)
+    self.cal_gas_consuption(yacht)
+    self.__vehicles.append(yacht)
+
+  def create_motorcycle (self,engine:Engine,chasis:str,model:str,year:int,wheels_diameter:float):
+    motorcycle = Motorcycle(engine,chasis,model,year,wheels_diameter)
+    self.cal_gas_consuption(motorcycle)
+    self.__vehicles.append(motorcycle)
+
+  def start_menu_logic(self, index : int):
+    if index == 1:
+      self.__view.create_car_menu()
+    elif index == 2:
+      self.__view.create_truck_menu()
+    elif index == 3:
+      self.__view.create_yacht_menu()
+    elif index == 4:
+      self.__view.create_motorcycle_menu()
+    elif index == 5:
+      self.__view.vehicles_list_menu()
+    elif index == 6:
+      sys.exit()
+
+
+
+#--- GETTERS ---
+
+  def get_vehicles(self):
+    return self.__vehicles
+
+    # =====================---- GUI ----===============================
+class View:
+  def __init__(self,controller:Main_controller):
+      self.__controller = controller
+
+  def start_menu(self):
+    self.__controller.start_menu_logic( int(input(""""=============================================================
+
+      Welcome to Create Vehicles program. Please select one of the following options:
+      1. Create a car
+      2. Create a truck
+      3. Create a yacht
+      4. Create a motorcycle
+      5. Vehicle list
+      6. Exit
+
+      =============================================================
+
+      """
+      )))
+
+
+
+
+  def create_engine_menu(self):
+      print("Now, let's create the engine of your vehicle: ")
+      type = input("Please write the type of engine: ")
+      potency = float(input("Please write the potency of your engine in Kilowats: "))
+      weight = float(input("Please write the weight of your engine in Kilograms: "))
+
+      engine = self.__controller.create_engine(type, potency, weight)
+
+      return engine
+
+  def create_car_menu(self):
+      print("  =============================================================")
+      chasis = input("Please select the chasis of your car (A or B): ")
+      model = input("Please write the model of your car: ")
+      year = int (input("Please write the year of the model of your car: "))
+      transmision = input("Please select the type of transmision of your car(manual or automatic): ")
+      engine = self.create_engine_menu()
+      self.__controller.create_car(engine,chasis,model,year,transmision)
+
+      print("""
+      =============================================================
+      Your car was created
+    """)
+
+      time.sleep(3)
+      self.start_menu()
+
+  def create_truck_menu(self):
+    print("  =============================================================")
+    chasis = input("Please select the chasis of your truck (A or B): ")
+    model = input("Please write the model of your truck: ")
+    year = int (input("Please write the year of the model of your truck: "))
+    capacity = float(input("Please write the capacity of your truck in m3: "))
+    engine = self.create_engine_menu()
+    self.__controller.create_truck(engine,chasis,model,year,capacity)
+
+    print(len(self.__controller.get_vehicles()))
+    print(""" =============================================================
+    Your truck was created
+    """)
+    time.sleep(3)
+    self.start_menu()
+
+  def create_yacht_menu(self):
+    print("  =============================================================")
+    chasis = input("Please select the chasis of your yacht (A or B): ")
+    model = input("Please write the model of your yacht: ")
+    year = int (input("Please write the year of the model of your yacht: "))
+    people_capacity = int(input("Please write the people capacity of your yacht: "))
+    engine = self.create_engine_menu()
+    self.__controller.create_yacht(engine,chasis,model,year,people_capacity)
+    print(""" =============================================================
+    Your yacht was created
+    """)
+    time.sleep(3)
+    self.start_menu()
+
+  def create_motorcycle_menu(self):
+    print("  =============================================================")
+    chasis = input("Please select the chasis of your motorcycle (A or B): ")
+    model = input("Please write the model of your motorcycle: ")
+    year = int (input("Please write the year of the model of your motorcycle: "))
+    wheels_diameter = float(input("Please write the wheels diameter of your motorcycle: "))
+    engine = self.create_engine_menu()
+    self.__controller.create_motorcycle(engine,chasis,model,year,wheels_diameter)
+    print("""  =============================================================
+    Your motorcycle was created
+   """)
+    time.sleep(3)
+    self.start_menu()
+
+  def vehicles_list_menu(self):
+    print("  =============================================================")
+    if self.__controller.get_vehicles() == []:
+      print("There are no vehicles in the list.")
+
+      time.sleep(3)
+      self.start_menu()
+
+    else:
+      for  vehicle in self.__controller.get_vehicles():
+
+        print(f"""  ____________________
+        Chasis: {vehicle.get_chasis()}
+        Model: {vehicle.get_model()}
+        Year: {vehicle.get_year()}
+        Engine type: {vehicle.get_engine().get_type()}
+        Engine potency: {vehicle.get_engine().get_potency()}
+        Engine weight: {vehicle.get_engine().get_weight()}
+        Gas consumption: {vehicle.get_gas_consuption()}
+_________________--""")
+        time.sleep(2)
+      self.start_menu()
+
+
+
+
+  # =====================---- LAUNCHER ----===============================
+control = Main_controller() 
